@@ -51,6 +51,7 @@ speed = 0
 
 def PWM_Setup(x):
     global speed
+    speed = int(speed)
     if x > 0:
         pi1_pwm.ChangeDutyCycle(speed)
         pi2_pwm.ChangeDutyCycle(0)
