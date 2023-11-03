@@ -174,19 +174,19 @@ while True:
     elif x=='l':
         print("low")
         # p.ChangeDutyCycle(25)
-        speed(2.5)
+        speedy(2.5)
         x='z'
 
     elif x=='m':
         print("medium")
         # p.ChangeDutyCycle(50)
-        speed(5)
+        speedy(5)
         x='z'
 
     elif x=='h':
         print("high")
         # p.ChangeDutyCycle(75)
-        speed(7.5)
+        speedy(7.5)
         x='z'
      
     elif int(x)>=0 and int(x)<=10:
