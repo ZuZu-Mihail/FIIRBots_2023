@@ -189,7 +189,7 @@ while True:
         speed(7.5)
         x='z'
      
-    elif x>=0 and x<=10:
+    elif int(x)>=0 and int(x)<=10:
         print("speed")
         # p.ChangeDutyCycle(int(x)*10)
         speedy(x)
