@@ -1,39 +1,44 @@
 import RPi.GPIO as GPIO          
 from time import sleep
-from MPU6050 import MPU6050
+# motoare sumo
+# in1 = 24
+# in2 = 23
+# en = 25
+# temp1=1
 
+# in3 = 17 # other motor
+# in4 = 27
 
-mpu = MPU6050.mpu6050(0x68)
-mpu.reset()
-mpu.power_manage()
-mpu.gyro_config()
-mpu.accel_config()
+# en2 = 22
 
-in1 = 24
-in2 = 23
-en = 25
+# motoare maze 2 cu pi 0
+
+in1 = 1
+in2 = 26
+# en = 22
 temp1=1
 
-in3 = 17 # other motor
-in4 = 27
+in3 = 23 # other motor
+in4 = 24
 
-en2 = 22
+# en2 = 25
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
-GPIO.setup(en,GPIO.OUT)
+# GPIO.setup(en,GPIO.OUT)
 GPIO.output(in1,GPIO.LOW)
 GPIO.output(in2,GPIO.LOW)
 
 GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
-GPIO.setup(en2,GPIO.OUT)
+# GPIO.setup(en2,GPIO.OUT)
 GPIO.output(in3,GPIO.LOW)
 GPIO.output(in4,GPIO.LOW)
 
 
-p=GPIO.PWM(en,1000)
+# p=GPIO.PWM(en,1000)
 p.start(25)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
@@ -70,101 +75,95 @@ def speed(x):
 
 while True:
 
-    gyroscope_data = mpu.read_gyroscope()
-    accelerometer_data = mpu.read_accelerometer()
 
-    print("Gyroscope data", gyroscope_data)
-
-
-    # x=input()
+    x=input()
     
-    # if x=='r':
-    #     print("run")
-    #     if(temp1==1):
-    #     #  GPIO.output(in1,GPIO.HIGH)
-    #     #  GPIO.output(in2,GPIO.LOW)
+    if x=='r':
+        print("run")
+        if(temp1==1):
+        #  GPIO.output(in1,GPIO.HIGH)
+        #  GPIO.output(in2,GPIO.LOW)
 
-    #     #  GPIO.output(in3,GPIO.HIGH) # other motor
-    #     #  GPIO.output(in4,GPIO.LOW)
-    #      forward()
-    #      print("forward")
-    #      x='z'
-    #     else:
-    #     #  GPIO.output(in1,GPIO.LOW)
-    #     #  GPIO.output(in2,GPIO.HIGH)
+        #  GPIO.output(in3,GPIO.HIGH) # other motor
+        #  GPIO.output(in4,GPIO.LOW)
+         forward()
+         print("forward")
+         x='z'
+        else:
+        #  GPIO.output(in1,GPIO.LOW)
+        #  GPIO.output(in2,GPIO.HIGH)
 
-    #     #  GPIO.output(in3,GPIO.LOW) # other motor
-    #     #  GPIO.output(in4,GPIO.HIGH)
-    #      backward()
-    #      print("backward")
-    #      x='z'
+        #  GPIO.output(in3,GPIO.LOW) # other motor
+        #  GPIO.output(in4,GPIO.HIGH)
+         backward()
+         print("backward")
+         x='z'
 
+    elif x=='s':
+        print("stop")
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.LOW)
 
-    # elif x=='s':
-    #     print("stop")
-    #     GPIO.output(in1,GPIO.LOW)
-    #     GPIO.output(in2,GPIO.LOW)
+        GPIO.output(in3,GPIO.LOW) # other motor
+        GPIO.output(in4,GPIO.LOW)
 
-    #     GPIO.output(in3,GPIO.LOW) # other motor
-    #     GPIO.output(in4,GPIO.LOW)
+        x='z'
 
-    #     x='z'
+    elif x=='f':
+        print("forward")
+        # GPIO.output(in1,GPIO.HIGH)
+        # GPIO.output(in2,GPIO.LOW)
 
-    # elif x=='f':
-    #     print("forward")
-    #     # GPIO.output(in1,GPIO.HIGH)
-    #     # GPIO.output(in2,GPIO.LOW)
+        # GPIO.output(in3,GPIO.HIGH) # other motor
+        # GPIO.output(in4,GPIO.LOW)
+        forward()
 
-    #     # GPIO.output(in3,GPIO.HIGH) # other motor
-    #     # GPIO.output(in4,GPIO.LOW)
-    #     forward()
+        temp1=1
+        x='z'
 
-    #     temp1=1
-    #     x='z'
+    elif x=='b':
+        print("backward")
+        # GPIO.output(in1,GPIO.LOW)
+        # GPIO.output(in2,GPIO.HIGH)
 
-    # elif x=='b':
-    #     print("backward")
-    #     # GPIO.output(in1,GPIO.LOW)
-    #     # GPIO.output(in2,GPIO.HIGH)
+        # GPIO.output(in3,GPIO.LOW) # other motor
+        # GPIO.output(in4,GPIO.HIGH)
+        backward()
 
-    #     # GPIO.output(in3,GPIO.LOW) # other motor
-    #     # GPIO.output(in4,GPIO.HIGH)
-    #     backward()
+        temp1=0
+        x='z'
 
-    #     temp1=0
-    #     x='z'
+    elif x=='l':
+        print("low")
+        # p.ChangeDutyCycle(25)
+        speed(2.5)
+        x='z'
 
-    # elif x=='l':
-    #     print("low")
-    #     # p.ChangeDutyCycle(25)
-    #     speed(2.5)
-    #     x='z'
+    elif x=='m':
+        print("medium")
+        # p.ChangeDutyCycle(50)
+        speed(5)
+        x='z'
 
-    # elif x=='m':
-    #     print("medium")
-    #     # p.ChangeDutyCycle(50)
-    #     speed(5)
-    #     x='z'
-
-    # elif x=='h':
-    #     print("high")
-    #     # p.ChangeDutyCycle(75)
-    #     speed(7.5)
-    #     x='z'
+    elif x=='h':
+        print("high")
+        # p.ChangeDutyCycle(75)
+        speed(7.5)
+        x='z'
      
-    # elif x>=0 and x<=10:
-    #     print("speed")
-    #     # p.ChangeDutyCycle(int(x)*10)
-    #     speed(x)
-    #     x='z'
-    #     break
+    elif x>=0 and x<=10:
+        print("speed")
+        # p.ChangeDutyCycle(int(x)*10)
+        speed(x)
+        x='z'
+        break
     
-    # elif x=='e':
-    #     GPIO.cleanup()
-    #     break
+    elif x=='e':
+        GPIO.cleanup()
+        break
 
 
     
-    # else:
-    #     print("<<<  wrong data  >>>")
-    #     print("please enter the defined data to continue.....")
+    else:
+        print("<<<  wrong data  >>>")
+        print("please enter the defined data to continue.....")
