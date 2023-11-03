@@ -51,7 +51,7 @@ speed = 0
 
 def PWM_Setup(x):
     global speed
-    aux = speed
+    aux = 30
     aux = int(speed)
     if x > 0:
         pi1_pwm.ChangeDutyCycle(aux)
