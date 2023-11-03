@@ -52,18 +52,19 @@ speed = 0
 def PWM_Setup(x):
     global speed
     aux = int(speed)
-    if x > 0:
+    print(aux)
+    if x > 0: # forward
         pi1_pwm.ChangeDutyCycle(aux)
         pi2_pwm.ChangeDutyCycle(0)
         pi3_pwm.ChangeDutyCycle(aux)
         pi4_pwm.ChangeDutyCycle(0)
-    elif x < 0:
+    elif x < 0: # backward
         pi1_pwm.ChangeDutyCycle(0)
         pi2_pwm.ChangeDutyCycle(aux)
         pi3_pwm.ChangeDutyCycle(0)
         pi4_pwm.ChangeDutyCycle(aux)
 
-    else:
+    else: # stop
         pi1_pwm.ChangeDutyCycle(0)
         pi2_pwm.ChangeDutyCycle(0)
         pi3_pwm.ChangeDutyCycle(0)
@@ -188,14 +189,13 @@ while True:
         # p.ChangeDutyCycle(75)
         speedy(7.5)
         x='z'
-     
-    elif int(x)>=0 and int(x)<=10:
-        print("speed")
-        # p.ChangeDutyCycle(int(x)*10)
-        speedy(x)
+    elif x=='full':
+        print("full")
+        # p.ChangeDutyCycle(100)
+        speedy(10)
         x='z'
-        break
-    
+
+
     elif x=='e':
         GPIO.cleanup()
         break
