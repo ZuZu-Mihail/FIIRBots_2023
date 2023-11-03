@@ -51,7 +51,6 @@ speed = 0
 
 def PWM_Setup(x):
     global speed
-    aux = 30
     aux = int(speed)
     if x > 0:
         pi1_pwm.ChangeDutyCycle(aux)
@@ -105,7 +104,7 @@ def stop():
     # GPIO.output(in4,GPIO.LOW)
     PWM_Setup(0)
 
-def speed(x):
+def speedy(x):
     # p.ChangeDutyCycle(int(x)*10)
     global speed
     speed = int(x) * 10
@@ -193,7 +192,7 @@ while True:
     elif x>=0 and x<=10:
         print("speed")
         # p.ChangeDutyCycle(int(x)*10)
-        speed(x)
+        speedy(x)
         x='z'
         break
     
