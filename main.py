@@ -51,17 +51,18 @@ speed = 0
 
 def PWM_Setup(x):
     global speed
-    speed = int(speed)
+    aux = speed
+    aux = int(speed)
     if x > 0:
-        pi1_pwm.ChangeDutyCycle(speed)
+        pi1_pwm.ChangeDutyCycle(aux)
         pi2_pwm.ChangeDutyCycle(0)
-        pi3_pwm.ChangeDutyCycle(speed)
+        pi3_pwm.ChangeDutyCycle(aux)
         pi4_pwm.ChangeDutyCycle(0)
     elif x < 0:
         pi1_pwm.ChangeDutyCycle(0)
-        pi2_pwm.ChangeDutyCycle(speed)
+        pi2_pwm.ChangeDutyCycle(aux)
         pi3_pwm.ChangeDutyCycle(0)
-        pi4_pwm.ChangeDutyCycle(speed)
+        pi4_pwm.ChangeDutyCycle(aux)
 
     else:
         pi1_pwm.ChangeDutyCycle(0)
