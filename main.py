@@ -68,7 +68,7 @@ def speed(x):
 
 
 
-while(1):
+while True:
 
     gyroscope_data = mpu.read_gyroscope()
     accelerometer_data = mpu.read_accelerometer()
