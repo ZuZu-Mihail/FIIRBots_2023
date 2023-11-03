@@ -30,7 +30,35 @@ p.start(25)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
+print("custom speed 0-10 (0-100%) & direction of motor is Forward & Backward.....")
 print("\n")    
+
+
+def forward():
+    GPIO.output(in1,GPIO.HIGH)
+    GPIO.output(in2,GPIO.LOW)
+
+    GPIO.output(in3,GPIO.HIGH) # other motor
+    GPIO.output(in4,GPIO.LOW)
+
+def backward():
+    GPIO.output(in1,GPIO.LOW)
+    GPIO.output(in2,GPIO.HIGH)
+
+    GPIO.output(in3,GPIO.LOW) # other motor
+    GPIO.output(in4,GPIO.HIGH)
+
+def stop():
+    GPIO.output(in1,GPIO.LOW)
+    GPIO.output(in2,GPIO.LOW)
+
+    GPIO.output(in3,GPIO.LOW) # other motor
+    GPIO.output(in4,GPIO.LOW)
+
+def speed(x):
+    p.ChangeDutyCycle(int(x)*10)
+
+
 
 while(1):
 
@@ -39,19 +67,21 @@ while(1):
     if x=='r':
         print("run")
         if(temp1==1):
-         GPIO.output(in1,GPIO.HIGH)
-         GPIO.output(in2,GPIO.LOW)
+        #  GPIO.output(in1,GPIO.HIGH)
+        #  GPIO.output(in2,GPIO.LOW)
 
-         GPIO.output(in3,GPIO.HIGH) # other motor
-         GPIO.output(in4,GPIO.LOW)
+        #  GPIO.output(in3,GPIO.HIGH) # other motor
+        #  GPIO.output(in4,GPIO.LOW)
+         forward()
          print("forward")
          x='z'
         else:
-         GPIO.output(in1,GPIO.LOW)
-         GPIO.output(in2,GPIO.HIGH)
+        #  GPIO.output(in1,GPIO.LOW)
+        #  GPIO.output(in2,GPIO.HIGH)
 
-         GPIO.output(in3,GPIO.LOW) # other motor
-         GPIO.output(in4,GPIO.HIGH)
+        #  GPIO.output(in3,GPIO.LOW) # other motor
+        #  GPIO.output(in4,GPIO.HIGH)
+         backward()
          print("backward")
          x='z'
 
@@ -68,44 +98,50 @@ while(1):
 
     elif x=='f':
         print("forward")
-        GPIO.output(in1,GPIO.HIGH)
-        GPIO.output(in2,GPIO.LOW)
+        # GPIO.output(in1,GPIO.HIGH)
+        # GPIO.output(in2,GPIO.LOW)
 
-        GPIO.output(in3,GPIO.HIGH) # other motor
-        GPIO.output(in4,GPIO.LOW)
+        # GPIO.output(in3,GPIO.HIGH) # other motor
+        # GPIO.output(in4,GPIO.LOW)
+        forward()
 
         temp1=1
         x='z'
 
     elif x=='b':
         print("backward")
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.HIGH)
+        # GPIO.output(in1,GPIO.LOW)
+        # GPIO.output(in2,GPIO.HIGH)
 
-        GPIO.output(in3,GPIO.LOW) # other motor
-        GPIO.output(in4,GPIO.HIGH)
+        # GPIO.output(in3,GPIO.LOW) # other motor
+        # GPIO.output(in4,GPIO.HIGH)
+        backward()
 
         temp1=0
         x='z'
 
     elif x=='l':
         print("low")
-        p.ChangeDutyCycle(25)
+        # p.ChangeDutyCycle(25)
+        speed(2.5)
         x='z'
 
     elif x=='m':
         print("medium")
-        p.ChangeDutyCycle(50)
+        # p.ChangeDutyCycle(50)
+        speed(5)
         x='z'
 
     elif x=='h':
         print("high")
-        p.ChangeDutyCycle(75)
+        # p.ChangeDutyCycle(75)
+        speed(7.5)
         x='z'
      
-    elif x>='0' and x<='10':
+    elif x>=0 and x<=10:
         print("speed")
-        p.ChangeDutyCycle(int(x)*10)
+        # p.ChangeDutyCycle(int(x)*10)
+        speed(x)
         x='z'
         break
     
