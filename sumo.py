@@ -9,11 +9,11 @@ sleep(0.1)
 mpu.Calibrate()
 
 
-Sumo = 0
+Sumo_EN = 0
 
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 
-ML2_RIGHT_PIN = 6
-
+ML2_RIGHT_PIN = 7
 
 GPIO.setup(ML2_RIGHT_PIN, GPIO.IN)
 
@@ -22,7 +22,7 @@ def read_ml2():
     return right_sensor
 
 
-# motoare sumo
+# motoare Sumo_EN
 # in1 = 24
 # in2 = 23
 # en = 25
@@ -35,16 +35,16 @@ def read_ml2():
 
 # motoare maze 2 cu pi 0
 
-if Sumo == 0:
-    in1 = 24
-    in2 = 23
+if Sumo_EN == 0:
+    in1 = 33
+    in2 = 35
     # en = 22
     temp1=1
 
-    in3 = 17 # other motor
-    in4 = 27
+    in3 = 10 # other motor
+    in4 = 32
 
-elif Sumo == 1:
+elif Sumo_EN == 1:
     in1 = 24
     in2 = 23
     en = 25
@@ -62,7 +62,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
-if Sumo == 1:
+if Sumo_EN == 1:
     GPIO.setup(en,GPIO.OUT)
 
 GPIO.output(in1,GPIO.LOW)
@@ -71,7 +71,7 @@ GPIO.output(in2,GPIO.LOW)
 GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
 # GPIO.setup(en2,GPIO.OUT)
-if Sumo == 1:
+if Sumo_EN == 1:
     GPIO.setup(en2,GPIO.OUT)
 GPIO.output(in3,GPIO.LOW)
 GPIO.output(in4,GPIO.LOW)
@@ -99,7 +99,7 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.HIGH) # other motor
         GPIO.output(in4,GPIO.LOW)
 
-        if Sumo == 0:
+        if Sumo_EN == 0:
             pi1_pwm.ChangeDutyCycle(aux)
             pi2_pwm.ChangeDutyCycle(0)
             pi3_pwm.ChangeDutyCycle(aux)
@@ -111,7 +111,7 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.LOW) # other motor
         GPIO.output(in4,GPIO.HIGH)
 
-        if Sumo == 0:
+        if Sumo_EN == 0:
             pi1_pwm.ChangeDutyCycle(0)
             pi2_pwm.ChangeDutyCycle(aux)
             pi3_pwm.ChangeDutyCycle(0)
@@ -126,14 +126,14 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.LOW) # other motor
         GPIO.output(in4,GPIO.LOW)
 
-        if Sumo == 0:
+        if Sumo_EN == 0:
             pi1_pwm.ChangeDutyCycle(0)
             pi2_pwm.ChangeDutyCycle(0)
             pi3_pwm.ChangeDutyCycle(0)
             pi4_pwm.ChangeDutyCycle(0)
  
 
-if Sumo == 1:
+if Sumo_EN == 1:
     p1=GPIO.PWM(en,1000)
     p1.start(25)
     p2=GPIO.PWM(en2,1000)
@@ -168,7 +168,7 @@ def speedy(x):
     global speed
     speed = int(x) * 10
 
-    if Sumo == 1:
+    if Sumo_EN == 1:
         p1.ChangeDutyCycle(int(x)*10)
         p2.ChangeDutyCycle(int(x)*10)
 
