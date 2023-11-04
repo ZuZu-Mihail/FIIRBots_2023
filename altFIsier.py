@@ -4,7 +4,7 @@ from time import sleep
 mpu = MPU6050()
 
 mpu.Initialize()
-sleep(0.01)
+sleep(0.1)
 mpu.Calibrate()
 
 while True:
