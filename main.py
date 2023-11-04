@@ -58,11 +58,11 @@ def PWM_Setup(x):
         pi2_pwm.ChangeDutyCycle(0)
         pi3_pwm.ChangeDutyCycle(aux)
         pi4_pwm.ChangeDutyCycle(0)
-        GPIO.output(in1,GPIO.HIGH)
-        GPIO.output(in2,GPIO.LOW)
+        # GPIO.output(in1,GPIO.HIGH)
+        # GPIO.output(in2,GPIO.LOW)
 
-        GPIO.output(in3,GPIO.HIGH) # other motor
-        GPIO.output(in4,GPIO.LOW)
+        # GPIO.output(in3,GPIO.HIGH) # other motor
+        # GPIO.output(in4,GPIO.LOW)
 
 
     elif x < 0: # backward
@@ -71,10 +71,10 @@ def PWM_Setup(x):
         pi3_pwm.ChangeDutyCycle(0)
         pi4_pwm.ChangeDutyCycle(aux)
 
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.HIGH)
-        GPIO.output(in3,GPIO.LOW) # other motor
-        GPIO.output(in4,GPIO.HIGH)
+        # GPIO.output(in1,GPIO.LOW)
+        # GPIO.output(in2,GPIO.HIGH)
+        # GPIO.output(in3,GPIO.LOW) # other motor
+        # GPIO.output(in4,GPIO.HIGH)
 
 
     else: # stop
@@ -83,10 +83,10 @@ def PWM_Setup(x):
         pi3_pwm.ChangeDutyCycle(0)
         pi4_pwm.ChangeDutyCycle(0)
 
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.LOW)
-        GPIO.output(in3,GPIO.LOW) # other motor
-        GPIO.output(in4,GPIO.LOW)
+        # GPIO.output(in1,GPIO.LOW)
+        # GPIO.output(in2,GPIO.LOW)
+        # GPIO.output(in3,GPIO.LOW) # other motor
+        # GPIO.output(in4,GPIO.LOW)
 
 
 
