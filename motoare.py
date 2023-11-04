@@ -205,15 +205,15 @@ while True:
     # while (GPIO.input(START)  == 0):
     #     stop()
 
-    if (GPIO.input(START) == 0):
-        stop
-    else:
-        mpu.read()
-        print(mpu._angZ)
+    # if (GPIO.input(START) == 0):
+    #     stop
+    # else:
+    #     mpu.read()
+    #     print(mpu._angZ)
         
-        speedy(0.1)
-        forward()
-        sleep(0.1)
+    #     speedy(0.1)
+    #     forward()
+    #     sleep(0.1)
 
     # x=input()
     
