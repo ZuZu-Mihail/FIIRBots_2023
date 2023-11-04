@@ -160,11 +160,7 @@ while True:
 
     elif x=='s':
         print("stop")
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.LOW)
-
-        GPIO.output(in3,GPIO.LOW) # other motor
-        GPIO.output(in4,GPIO.LOW)
+        stop()
 
         x='z'
 
