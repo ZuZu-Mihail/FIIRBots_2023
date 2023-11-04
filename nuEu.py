@@ -46,7 +46,7 @@ print('START')
 
 startTime = ticks_ms()
 
-while (ticks_ms() - startTime <= 3) and GPIO.input(START) == 1:
+while GPIO.input(START) == 1:
     left1_pwm.start(0)
     left2_pwm.start(0.5)
     right1_pwm.start(0)
