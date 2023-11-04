@@ -99,6 +99,8 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.HIGH) # other motor
         GPIO.output(in4,GPIO.LOW)
 
+        
+
         if Sumo_EN == 0:
             pi1_pwm.ChangeDutyCycle(aux)
             pi2_pwm.ChangeDutyCycle(0)

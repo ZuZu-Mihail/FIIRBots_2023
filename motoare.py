@@ -36,7 +36,7 @@ if Sumo == 0:
     # in3 = 33 # other motor
     # in4 = 35
     in4 = 19
-  
+ 
 elif Sumo == 1:
     in1 = 24
     in2 = 23

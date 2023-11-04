@@ -2,14 +2,13 @@ import RPi.GPIO as GPIO
 # from mpu6050 import MPU6050
 # from time import sleep
 
-# mpu = MPU6050()
+mpu = MPU6050()
 
-# mpu.Initialize()
-# sleep(0.1)
-# mpu.Calibrate()
-
-
-# Sumo = 0
+mpu.Initialize()
+sleep(0.1)
+mpu.Calibrate()
+print("b1")
+Sumo = 0
 
 in1 = 12
 in2 = 32
@@ -66,6 +65,7 @@ GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
 
+print("b2")
 
 
 GPIO.setup(START, GPIO.IN)
@@ -78,6 +78,7 @@ GPIO.output(in2,GPIO.LOW)
 GPIO.output(in3,GPIO.LOW)
 GPIO.output(in4,GPIO.LOW)
 
+print("b3")
 
 
 # GPIO.setup(in3,GPIO.OUT)
@@ -99,50 +100,51 @@ pi3_pwm.start(0)
 pi4_pwm.start(0)
 
 # speed = 0
+print("b4")
 
-# def PWM_Setup(x):
-#     global speed
-#     aux = int(speed)
-#     print(aux)
-#     if x > 0: # forward
-#         GPIO.output(in1,GPIO.HIGH)
-#         GPIO.output(in2,GPIO.LOW)
+def PWM_Setup(x):
+    global speed
+    aux = int(speed)
+    print(aux)
+    if x > 0: # forward
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
 
-#         GPIO.output(in3,GPIO.HIGH) # other motor
-#         GPIO.output(in4,GPIO.LOW)
+        GPIO.output(in3,GPIO.HIGH) # other motor
+        GPIO.output(in4,GPIO.LOW)
 
-#         if Sumo == 0:
-#             pi1_pwm.ChangeDutyCycle(aux)
-#             pi2_pwm.ChangeDutyCycle(0)
-#             pi3_pwm.ChangeDutyCycle(aux)
-#             pi4_pwm.ChangeDutyCycle(0)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(aux)
+            pi2_pwm.ChangeDutyCycle(0)
+            pi3_pwm.ChangeDutyCycle(aux)
+            pi4_pwm.ChangeDutyCycle(0)
 
-#     elif x < 0: # backward
-#         GPIO.output(in1,GPIO.LOW)
-#         GPIO.output(in2,GPIO.HIGH)
-#         GPIO.output(in3,GPIO.LOW) # other motor
-#         GPIO.output(in4,GPIO.HIGH)
+    elif x < 0: # backward
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.HIGH)
+        GPIO.output(in3,GPIO.LOW) # other motor
+        GPIO.output(in4,GPIO.HIGH)
 
-#         if Sumo == 0:
-#             pi1_pwm.ChangeDutyCycle(0)
-#             pi2_pwm.ChangeDutyCycle(aux)
-#             pi3_pwm.ChangeDutyCycle(0)
-#             pi4_pwm.ChangeDutyCycle(aux)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(0)
+            pi2_pwm.ChangeDutyCycle(aux)
+            pi3_pwm.ChangeDutyCycle(0)
+            pi4_pwm.ChangeDutyCycle(aux)
 
 
 
-#     else: # stop
+    else: # stop
 
-#         GPIO.output(in1,GPIO.LOW)
-#         GPIO.output(in2,GPIO.LOW)
-#         GPIO.output(in3,GPIO.LOW) # other motor
-#         GPIO.output(in4,GPIO.LOW)
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.LOW)
+        GPIO.output(in3,GPIO.LOW) # other motor
+        GPIO.output(in4,GPIO.LOW)
 
-#         if Sumo == 0:
-#             pi1_pwm.ChangeDutyCycle(0)
-#             pi2_pwm.ChangeDutyCycle(0)
-#             pi3_pwm.ChangeDutyCycle(0)
-#             pi4_pwm.ChangeDutyCycle(0)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(0)
+            pi2_pwm.ChangeDutyCycle(0)
+            pi3_pwm.ChangeDutyCycle(0)
+            pi4_pwm.ChangeDutyCycle(0)
 
 
 
@@ -163,44 +165,45 @@ pi4_pwm.start(0)
 # print("\n")    
 
 
-# def forward():
-#     # GPIO.output(in1,GPIO.HIGH)
-#     # GPIO.output(in2,GPIO.LOW)
+def forward():
+    # GPIO.output(in1,GPIO.HIGH)
+    # GPIO.output(in2,GPIO.LOW)
 
-#     # GPIO.output(in3,GPIO.HIGH) # other motor
-#     # GPIO.output(in4,GPIO.LOW)
-#     PWM_Setup(1)
+    # GPIO.output(in3,GPIO.HIGH) # other motor
+    # GPIO.output(in4,GPIO.LOW)
+    PWM_Setup(1)
 
-# def backward():
-#     # GPIO.output(in1,GPIO.LOW)
-#     # GPIO.output(in2,GPIO.HIGH)
+def backward():
+    # GPIO.output(in1,GPIO.LOW)
+    # GPIO.output(in2,GPIO.HIGH)
 
-#     # GPIO.output(in3,GPIO.LOW) # other motor
-#     # GPIO.output(in4,GPIO.HIGH)
-#     PWM_Setup(-1)
+    # GPIO.output(in3,GPIO.LOW) # other motor
+    # GPIO.output(in4,GPIO.HIGH)
+    PWM_Setup(-1)
 
-# def stop():
-#     # GPIO.output(in1,GPIO.LOW)
-#     # GPIO.output(in2,GPIO.LOW)
+def stop():
+    # GPIO.output(in1,GPIO.LOW)
+    # GPIO.output(in2,GPIO.LOW)
 
-#     # GPIO.output(in3,GPIO.LOW) # other motor
-#     # GPIO.output(in4,GPIO.LOW)
-#     PWM_Setup(0)
+    # GPIO.output(in3,GPIO.LOW) # other motor
+    # GPIO.output(in4,GPIO.LOW)
+    PWM_Setup(0)
 
-# def speedy(x):
-#     # p.ChangeDutyCycle(int(x)*10)
-#     global speed
-#     speed = int(x) * 10
+def speedy(x):
+    # p.ChangeDutyCycle(int(x)*10)
+    global speed
+    speed = int(x) * 10
 
 #     if Sumo == 1:
 #         p1.ChangeDutyCycle(int(x)*10)
 #         p2.ChangeDutyCycle(int(x)*10)
 
-
+print("1")
 #wait for reset
 while GPIO.input(START) == 1:
     a = 0
 
+print("1")
 #wait for start
 while GPIO.input(START)  == 0:
     a = 0
@@ -208,12 +211,12 @@ while GPIO.input(START)  == 0:
 print('START')
 
 
-
+print("haidaa")
 while True:
-
     print(GPIO.input(START))
     GPIO.output(in1,GPIO.LOW)
     GPIO.output(in2,GPIO.LOW)
+    print("b1")
 
     while GPIO.input(START) == 1:
         GPIO.output(in1,GPIO.HIGH)
