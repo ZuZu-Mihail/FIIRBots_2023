@@ -202,15 +202,18 @@ print('START')
 while True:
 
     print(GPIO.input(START))
+    # while (GPIO.input(START)  == 0):
+    #     stop()
 
-    mpu.read()
-    print(mpu._angZ)
-    
-    speedy(0.1)
-    forward()
-    sleep(0.1)
-    while (GPIO.input(START)  == 0):
-        stop()
+    if (GPIO.input(START) == 0):
+        stop
+    else:
+        mpu.read()
+        print(mpu._angZ)
+        
+        speedy(0.1)
+        forward()
+        sleep(0.1)
 
     # x=input()
     
