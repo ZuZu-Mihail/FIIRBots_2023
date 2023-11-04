@@ -178,7 +178,7 @@ class MPU6050(object):
             sumGyroY += self._rawGyroY
             sumGyroZ += self._rawGyroZ
             i+=1
-            time.sleep(0.001)
+            time.sleep(0.01)
         
         sumGyroX /= self.__CALIBRATION_MEASURES
         sumGyroY /= self.__CALIBRATION_MEASURES
