@@ -81,7 +81,7 @@ class MPU6050(object):
     Module for InvenSense IMUs. Base class implements MPU6050 6DOF sensor, with
     features common to MPU9150 and MPU9250 9DOF sensors.
     '''
-    __bus = smbus.SMBus(1)
+    __bus = 0
 
     #some MPU6050 Registers and their Address
     __PWR_MGMT_1   = 0x6B
@@ -143,6 +143,10 @@ class MPU6050(object):
     __filterGyroCoeff = 0
 
     def __init__(self, side_str=0X68):
+
+        smbus.SMBus(1)
+        
+        sleep_ms(200)
 
         self.__DEVICE_ADDRESS = side_str
 
