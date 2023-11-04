@@ -12,8 +12,8 @@ Sumo = 0
 
 in1 = 12
 in2 = 32
-in3 = 13
-in4 = 19
+in3 = 35
+in4 = 33
 
 
 # motoare sumo
@@ -225,9 +225,9 @@ while True:
         GPIO.output(in3,GPIO.HIGH) # other motor
         GPIO.output(in4,GPIO.LOW)
 
-        pi1_pwm.ChangeDutyCycle(90)
+        pi1_pwm.ChangeDutyCycle(75)
         pi2_pwm.ChangeDutyCycle(0)
-        pi3_pwm.ChangeDutyCycle(90)
+        pi3_pwm.ChangeDutyCycle(75)
         pi4_pwm.ChangeDutyCycle(0)
     else:
         GPIO.output(in1,GPIO.LOW)
