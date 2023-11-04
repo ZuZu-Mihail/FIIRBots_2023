@@ -10,8 +10,6 @@ mpu.Calibrate()
 
 i = 0
 
-print(time.tick_ms())
-
 def ticks_ms():
     return int(time.time() * 1000)
 
