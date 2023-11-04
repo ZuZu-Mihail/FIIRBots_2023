@@ -70,6 +70,9 @@ def wrap(angle):
 def angle_average(wa, a, wb, b):
 	return wrap(wa * a + wb * (a + wrap(b-a)))
 
+def ticks_ms():
+    return int(time.time() * 1000)
+
 class MPU6050(object):
     '''
     Module for InvenSense IMUs. Base class implements MPU6050 6DOF sensor, with

@@ -12,6 +12,12 @@ i = 0
 
 print(time.tick_ms())
 
+def ticks_ms():
+    return int(time.time() * 1000)
+
+while True:
+    print(ticks_ms())
+
 # while True:
 #     mpu.read()
 #     print(mpu._angZ)
