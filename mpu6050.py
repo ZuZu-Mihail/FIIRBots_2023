@@ -219,7 +219,6 @@ class MPU6050(object):
 
     def _read(self, addr):
 	#Accelero and Gyro value are 16-bit
-        time.sleep(0.5)
         high = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr)
         low = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr+1)
     
