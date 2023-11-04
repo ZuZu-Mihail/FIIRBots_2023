@@ -1,5 +1,8 @@
 import RPi.GPIO as GPIO          
 from time import sleep
+
+Sumo = 0
+
 # motoare sumo
 # in1 = 24
 # in2 = 23
@@ -13,13 +16,25 @@ from time import sleep
 
 # motoare maze 2 cu pi 0
 
-in1 = 18
-in2 = 12
-# en = 22
-temp1=1
+if Sumo == 0:
+    in1 = 18
+    in2 = 12
+    # en = 22
+    temp1=1
 
-in3 = 13 # other motor
-in4 = 19
+    in3 = 13 # other motor
+    in4 = 19
+
+elif Sumo == 1:
+    in1 = 24
+    in2 = 23
+    en = 25
+    temp1=1
+
+    in3 = 17 # other motor
+    in4 = 27
+
+    en2 = 22
 
 # en2 = 25
 
@@ -28,12 +43,17 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
+if Sumo == 1:
+    GPIO.setup(en,GPIO.OUT)
+
 GPIO.output(in1,GPIO.LOW)
 GPIO.output(in2,GPIO.LOW)
 
 GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
 # GPIO.setup(en2,GPIO.OUT)
+if Sumo == 1:
+    GPIO.setup(en2,GPIO.OUT)
 GPIO.output(in3,GPIO.LOW)
 GPIO.output(in4,GPIO.LOW)
 
@@ -60,10 +80,11 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.HIGH) # other motor
         GPIO.output(in4,GPIO.LOW)
 
-        pi1_pwm.ChangeDutyCycle(aux)
-        pi2_pwm.ChangeDutyCycle(0)
-        pi3_pwm.ChangeDutyCycle(aux)
-        pi4_pwm.ChangeDutyCycle(0)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(aux)
+            pi2_pwm.ChangeDutyCycle(0)
+            pi3_pwm.ChangeDutyCycle(aux)
+            pi4_pwm.ChangeDutyCycle(0)
 
     elif x < 0: # backward
         GPIO.output(in1,GPIO.LOW)
@@ -71,10 +92,11 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.LOW) # other motor
         GPIO.output(in4,GPIO.HIGH)
 
-        pi1_pwm.ChangeDutyCycle(0)
-        pi2_pwm.ChangeDutyCycle(aux)
-        pi3_pwm.ChangeDutyCycle(0)
-        pi4_pwm.ChangeDutyCycle(aux)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(0)
+            pi2_pwm.ChangeDutyCycle(aux)
+            pi3_pwm.ChangeDutyCycle(0)
+            pi4_pwm.ChangeDutyCycle(aux)
 
 
 
@@ -85,15 +107,24 @@ def PWM_Setup(x):
         GPIO.output(in3,GPIO.LOW) # other motor
         GPIO.output(in4,GPIO.LOW)
 
-        pi1_pwm.ChangeDutyCycle(0)
-        pi2_pwm.ChangeDutyCycle(0)
-        pi3_pwm.ChangeDutyCycle(0)
-        pi4_pwm.ChangeDutyCycle(0)
+        if Sumo == 0:
+            pi1_pwm.ChangeDutyCycle(0)
+            pi2_pwm.ChangeDutyCycle(0)
+            pi3_pwm.ChangeDutyCycle(0)
+            pi4_pwm.ChangeDutyCycle(0)
 
 
 
 # p=GPIO.PWM(en,1000)
 # p.start(25)
+
+if Sumo == 1:
+    p1=GPIO.PWM(en,1000)
+    p1.start(25)
+    p2=GPIO.PWM(en2,1000)
+    p2.start(25)
+
+
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -130,6 +161,10 @@ def speedy(x):
     global speed
     speed = int(x) * 10
 
+    if Sumo == 1:
+        p1.ChangeDutyCycle(int(x)*10)
+        p2.ChangeDutyCycle(int(x)*10)
+
 
 
 while True:
@@ -140,20 +175,10 @@ while True:
     if x=='r':
         print("run")
         if(temp1==1):
-        #  GPIO.output(in1,GPIO.HIGH)
-        #  GPIO.output(in2,GPIO.LOW)
-
-        #  GPIO.output(in3,GPIO.HIGH) # other motor
-        #  GPIO.output(in4,GPIO.LOW)
          forward()
          print("forward")
          x='z'
         else:
-        #  GPIO.output(in1,GPIO.LOW)
-        #  GPIO.output(in2,GPIO.HIGH)
-
-        #  GPIO.output(in3,GPIO.LOW) # other motor
-        #  GPIO.output(in4,GPIO.HIGH)
          backward()
          print("backward")
          x='z'
@@ -166,11 +191,7 @@ while True:
 
     elif x=='f':
         print("forward")
-        # GPIO.output(in1,GPIO.HIGH)
-        # GPIO.output(in2,GPIO.LOW)
 
-        # GPIO.output(in3,GPIO.HIGH) # other motor
-        # GPIO.output(in4,GPIO.LOW)
         forward()
 
         temp1=1
@@ -178,11 +199,7 @@ while True:
 
     elif x=='b':
         print("backward")
-        # GPIO.output(in1,GPIO.LOW)
-        # GPIO.output(in2,GPIO.HIGH)
 
-        # GPIO.output(in3,GPIO.LOW) # other motor
-        # GPIO.output(in4,GPIO.HIGH)
         backward()
 
         temp1=0
@@ -190,24 +207,20 @@ while True:
 
     elif x=='l':
         print("low")
-        # p.ChangeDutyCycle(25)
         speedy(2.5)
         x='z'
 
     elif x=='m':
         print("medium")
-        # p.ChangeDutyCycle(50)
         speedy(5)
         x='z'
 
     elif x=='h':
         print("high")
-        # p.ChangeDutyCycle(75)
         speedy(7.5)
         x='z'
     elif x=='full': 
         print("full")
-        # p.ChangeDutyCycle(100)
         speedy(10)
         x='z'
 
