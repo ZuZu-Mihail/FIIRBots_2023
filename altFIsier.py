@@ -3,7 +3,7 @@ from time import sleep
 # from vl53l0x import VL53L0X, Vl53l0xAccuracyMode
 import board
 import busio
-import adafruit_vl53l0x
+import adafruit-circuitpython-vl53l0x
 
 mpu = MPU6050()
 
