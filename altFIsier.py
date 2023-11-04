@@ -8,16 +8,6 @@ mpu.Initialize()
 
 mpu.Calibrate()
 
-i = 0
-
-def ticks_ms():
-    return int(time.time() * 1000)
-
 while True:
-    print(ticks_ms())
-
-# while True:
-#     mpu.read()
-#     print(mpu._angZ)
-#     sleep(0.005)
-    
+    mpu.read()
+    print(mpu._angZ)

@@ -73,6 +73,9 @@ def angle_average(wa, a, wb, b):
 def ticks_ms():
     return int(time.time() * 1000)
 
+def sleep_ms(ms):
+    time.sleep(ms / 1000)
+
 class MPU6050(object):
     '''
     Module for InvenSense IMUs. Base class implements MPU6050 6DOF sensor, with
@@ -163,7 +166,7 @@ class MPU6050(object):
         self.accel_range = 0                    # default to highest sensitivity
         self.gyro_range = 0                     # Likewise for gyro
 
-        self.__intervalStart = time.time() * 1000
+        self.__intervalStart = ticks_ms()
 
     def Calibrate(self):
         '''
@@ -181,7 +184,7 @@ class MPU6050(object):
             sumGyroY += self._rawGyroY
             sumGyroZ += self._rawGyroZ
             i+=1
-            time.sleep(0.001)
+            sleep_ms(1)
         
         sumGyroX /= self.__CALIBRATION_MEASURES
         sumGyroY /= self.__CALIBRATION_MEASURES
@@ -209,7 +212,7 @@ class MPU6050(object):
         self._angAccX = wrap((atan2(accY, sqrt(accZ * accZ + accX * accX))) * self.__RAD_TO_DEG)
         self._angAccY = wrap((-atan2(accX, sqrt(accZ * accZ + accY * accY))) * self.__RAD_TO_DEG)
         
-        self.__dt = (((time.time() * 1000) - self.__intervalStart)) * 0.001
+        self.__dt = ((ticks_ms() - self.__intervalStart)) * 0.001
         self._angGyroX = wrap(self._angGyroX + gyroX * self.__dt)
         self._angGyroY = wrap(self._angGyroY + gyroY * self.__dt)
         self._angGyroZ = wrap(self._angGyroZ + gyroZ * self.__dt)
@@ -218,7 +221,7 @@ class MPU6050(object):
         self._angY = angle_average(self.__filterAccelCoeff, self._angAccY, self.__filterGyroCoeff, self._angY + gyroY * self.__dt)
         self._angZ = self._angGyroZ
 
-        self.__intervalStart = (time.time() * 1000)
+        self.__intervalStart = ticks_ms()
 
     def _read(self, addr):
 	#Accelero and Gyro value are 16-bit
