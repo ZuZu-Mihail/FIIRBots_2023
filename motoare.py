@@ -181,11 +181,11 @@ def speedy(x):
 
 
 #wait for reset
-while START.value() == 1:
+while GPIO.input(START) == 1:
     a = 0
 
 #wait for start
-while START.value() == 0:
+while GPIO.input(START)  == 0:
     a = 0
 
 print('START')
@@ -200,7 +200,7 @@ while True:
     speedy(0.1)
     forward()
     sleep(0.1)
-    while (START.value() == 0):
+    while (GPIO.input(START)  == 0):
         stop()
 
     # x=input()
