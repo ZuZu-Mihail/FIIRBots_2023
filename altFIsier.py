@@ -8,10 +8,13 @@ mpu.Initialize()
 sleep(0.1)
 mpu.Calibrate()
 
+print("declare")
 tof = VL53L0X()
 
+print("open")
 tof.open()
 
+print("range")
 tof.start_ranging(Vl53l0xAccuracyMode.GOOD)
 
 while True:
