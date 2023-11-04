@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
-# from mpu6050 import MPU6050
-# from time import sleep
+from mpu6050 import MPU6050
+from time import sleep
 
 mpu = MPU6050()
 
