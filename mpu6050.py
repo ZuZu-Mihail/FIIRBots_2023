@@ -265,6 +265,8 @@ class MPU6050(object):
         try:
             high = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr)
             low = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr+1)
+            self.__high = high
+            self.__low = low
         except OSError:
             high = self.__high
             low = self.__low
