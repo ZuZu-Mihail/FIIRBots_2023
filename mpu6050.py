@@ -140,7 +140,7 @@ class MPU6050(object):
 
         self.__DEVICE_ADDRESS = side_str
 
-        self.__bus.wire_byte_data(self.__DEVICE_ADDRESS, self.__SMPLRT_DIV, 7)
+        self.__bus.write_byte_data(self.__DEVICE_ADDRESS, self.__SMPLRT_DIV, 7)
 
         self.__bus.write_byte_data(self.__DEVICE_ADDRESS, self.__PWR_MGMT_1, 1)
 
