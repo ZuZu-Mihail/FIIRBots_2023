@@ -13,13 +13,13 @@ from time import sleep
 
 # motoare maze 2 cu pi 0
 
-in1 = 1
-in2 = 26
+in1 = 18
+in2 = 12
 # en = 22
 temp1=1
 
-in3 = 23 # other motor
-in4 = 24
+in3 = 13 # other motor
+in4 = 19
 
 # en2 = 25
 
@@ -87,7 +87,7 @@ def PWM_Setup(x):
         GPIO.output(in2,GPIO.LOW)
         GPIO.output(in3,GPIO.LOW) # other motor
         GPIO.output(in4,GPIO.LOW)
-        
+
 
 
 # p=GPIO.PWM(en,1000)
