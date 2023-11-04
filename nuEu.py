@@ -48,9 +48,9 @@ startTime = ticks_ms()
 
 while GPIO.input(START) == 1:
     left1_pwm.start(0)
-    left2_pwm.start(0.5)
+    left2_pwm.start(1)
     right1_pwm.start(0)
-    right2_pwm.start(0.5)
+    right2_pwm.start(1)
 
 
 left1_pwm.start(0)
