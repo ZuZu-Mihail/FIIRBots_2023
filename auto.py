@@ -279,7 +279,7 @@ def read_ml2():
 # motoare maze 2 cu pi 0
 
 if Sumo == 0:
-    in1 = 18
+    in1 = 15
     in2 = 12
     # en = 22
     temp1=1
