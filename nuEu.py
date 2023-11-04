@@ -32,6 +32,9 @@ left2_pwm.start(0)
 right1_pwm.start(0)
 right2_pwm.start(0)
 
+def ticks_ms():
+    return time.time
+
 #wait for reset
 while GPIO.input(START) == 1:
     a = 0
@@ -41,9 +44,9 @@ while GPIO.input(START)  == 0:
     a = 0
 print('START')
 
-startTime = time.time() * 1000
+startTime = ticks_ms()
 
-while ((time.time() * 1000) - startTime < 3) and GPIO.input(START) == 1:
+while (ticks_ms() - startTime < 3) and GPIO.input(START) == 1:
     left1_pwm.start(0)
     left2_pwm.start(0.5)
     right1_pwm.start(0)
