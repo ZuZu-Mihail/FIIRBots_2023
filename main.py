@@ -1,5 +1,13 @@
-import RPi.GPIO as GPIO          
+import RPi.GPIO as GPIO
+from mpu6050 import MPU6050
 from time import sleep
+
+mpu = MPU6050()
+
+mpu.Initialize()
+sleep(0.1)
+mpu.Calibrate()
+
 
 Sumo = 0
 
@@ -169,6 +177,8 @@ def speedy(x):
 
 while True:
 
+    mpu.read()
+    print(mpu._angZ)
 
     x=input()
     
