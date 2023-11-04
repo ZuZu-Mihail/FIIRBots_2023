@@ -1,234 +1,190 @@
-#!/usr/bin/python
-
-# MIT License
+#!/usr/bin/env python
 #
-# Copyright (c) 2017 John Bryan Moore
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-from ctypes import CDLL, CFUNCTYPE, POINTER, c_int, c_uint, pointer, c_ubyte, c_uint8, c_uint32
-import sysconfig
-import pkg_resources
-SMBUS='smbus'
-for dist in pkg_resources.working_set:
-    #print(dist.project_name, dist.version)
-    if dist.project_name == 'smbus':
-        break
-    if dist.project_name == 'smbus2':
-        SMBUS='smbus2'
-        break
-if SMBUS == 'smbus':
-    import smbus
-elif SMBUS == 'smbus2':
-    import smbus2 as smbus
-import site
+from __future__ import print_function
+import _rpi_vl53l0x as vl
 
+VERSION_REQUIRED_MAJOR = 1
+VERSION_REQUIRED_MINOR = 0
+VERSION_REQUIRED_BUILD = 2
 
-class Vl53l0xError(RuntimeError):
-    pass
+_GPIO_NEW_SAMPLE_READY = 0x04
 
+class VL53L0X(object):
+    def __init__(self, address = 0x29, bus = 0x1):
+        self.dev_addr = address
+        self.dev = vl.new_VL53L0X_Dev_t()
+        vl.VL53L0X_Dev_t_I2cDevAddr_set(self.dev, self.dev_addr)
 
-class Vl53l0xAccuracyMode:
-    GOOD = 0        # 33 ms timing budget 1.2m range
-    BETTER = 1      # 66 ms timing budget 1.2m range
-    BEST = 2        # 200 ms 1.2m range
-    LONG_RANGE = 3  # 33 ms timing budget 2m range
-    HIGH_SPEED = 4  # 20 ms timing budget 1.2m range
+        fd = vl.VL53L0X_i2c_init("/dev/i2c-%d" % bus, self.dev_addr)
+        if fd < 0:
+            self._err = vl.VL53L0X_ERROR_CONTROL_INTERFACE
+            print("Failed to initialize i2c interface")
+        else:
+            self._err = vl.VL53L0X_ERROR_NONE
+            vl.VL53L0X_Dev_t_fd_set(self.dev, fd)
 
+    def __del__(self):
+        st = vl.VL53L0X_StopMeasurement(self.dev)
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = self.__wait_stoped()
+        if st == vl.VL53L0X_ERROR_NONE:
+            vl.VL53L0X_ClearInterruptMask(self.dev, _GPIO_NEW_SAMPLE_READY)
+        vl.delete_VL53L0X_Dev_t(self.dev)
+        vl.VL53L0X_i2c_close()
+        self._err = st
 
-class Vl53l0xDeviceMode:
-    SINGLE_RANGING = 0
-    CONTINUOUS_RANGING = 1
-    SINGLE_HISTOGRAM = 2
-    CONTINUOUS_TIMED_RANGING = 3
-    SINGLE_ALS = 10
-    GPIO_DRIVE = 20
-    GPIO_OSC = 21
+    def get_libver(self):
+        version = None
+        ver = vl.new_VL53L0X_Version_t()
+        st = vl.VL53L0X_GetVersion(ver)
+        if st == vl.VL53L0X_ERROR_NONE:
+            major = vl.VL53L0X_Version_t_major_get(ver)
+            minor = vl.VL53L0X_Version_t_minor_get(ver)
+            build = vl.VL53L0X_Version_t_build_get(ver)
+            revision = vl.VL53L0X_Version_t_revision_get(ver)
+            version = {
+                'major'   : major,
+                'minor'   : minor,
+                'build'   : build,
+                'revision': revision,
+            }
+            '''
+            if major != VERSION_REQUIRED_MAJOR or \
+               minor != VERSION_REQUIRED_MINOR or build != VERSION_REQUIRED_BUILD:
+                print("VL53L0X API Version Error: ")
+                print("  Your firmware has %d.%d.%d (revision %d)." % (major, minor, build, revision))
+                print("  This example requires %d.%d.%d.\n" % \
+                    (VERSION_REQUIRED_MAJOR, VERSION_REQUIRED_MINOR, VERSION_REQUIRED_BUILD))
+            '''
+        vl.delete_VL53L0X_Version_t(ver)
+        self._err = st
+        return version
 
+    def get_devver(self):
+        version = None
+        devinfo = vl.new_VL53L0X_DeviceInfo_t()
+        st = vl.VL53L0X_GetDeviceInfo(self.dev, devinfo)
+        if st == vl.VL53L0X_ERROR_NONE:
+            version = {
+                'type' : vl.VL53L0X_DeviceInfo_t_Type_get(devinfo),
+                'name' : vl.VL53L0X_DeviceInfo_t_Name_get(devinfo),
+                'id'   : vl.VL53L0X_DeviceInfo_t_ProductId_get(devinfo),
+                'major': vl.VL53L0X_DeviceInfo_t_ProductRevisionMajor_get(devinfo),
+                'minor': vl.VL53L0X_DeviceInfo_t_ProductRevisionMinor_get(devinfo),
+            }
+        vl.delete_VL53L0X_DeviceInfo_t(devinfo)
+        self._err = st
+        return version
 
-class Vl53l0xGpioAlarmType:
-    OFF = 0
-    THRESHOLD_CROSSED_LOW = 1
-    THRESHOLD_CROSSED_HIGH = 2
-    THRESHOLD_CROSSED_OUT = 3
-    NEW_MEASUREMENT_READY = 4
+    def begin(self):
+        refSpandCount   = vl.new_uint32_t(1)
+        isApertureSpads = vl.new_uint8_t(1)
+        VhvSettings     = vl.new_uint8_t(1)
+        PhaseCal        = vl.new_uint8_t(1)
 
+        st = vl.VL53L0X_DataInit(self.dev)
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = vl.VL53L0X_StaticInit(self.dev)
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = vl.VL53L0X_PerformRefCalibration(self.dev, VhvSettings, PhaseCal)
+            '''
+            print("VhvSettings = {} PhaseCal = {}".format(
+                vl.uint8_t___getitem__(VhvSettings,0),
+                vl.uint8_t___getitem__(PhaseCal,0)))
+            '''
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = vl.VL53L0X_PerformRefSpadManagement(self.dev, refSpandCount, isApertureSpads)
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = vl.VL53L0X_SetDeviceMode(self.dev, vl.VL53L0X_DEVICEMODE_CONTINUOUS_RANGING)
+        if st == vl.VL53L0X_ERROR_NONE:
+            st = vl.VL53L0X_StartMeasurement(self.dev)
 
-class Vl53l0xInterruptPolarity:
-    LOW = 0
-    HIGH = 1
+        vl.delete_uint8_t(PhaseCal)
+        vl.delete_uint8_t(VhvSettings)
+        vl.delete_uint8_t(isApertureSpads)
+        vl.delete_uint32_t(refSpandCount)
+        self._err = st
+        return st
 
+    def __wait_stoped(self):
+        st = vl.VL53L0X_ERROR_NONE
+        stop_completed = vl.new_uint32_t(1)
 
-# Read/write function pointer types.
-_I2C_READ_FUNC = CFUNCTYPE(c_int, c_ubyte, c_ubyte, POINTER(c_ubyte), c_ubyte)
-_I2C_WRITE_FUNC = CFUNCTYPE(c_int, c_ubyte, c_ubyte, POINTER(c_ubyte), c_ubyte)
+        loop_nr = 0
+        while True:
+            st = vl.VL53L0X_GetStopCompletedStatus(self.dev, stop_completed)
+            if vl.uint32_t___getitem__(stop_completed, 0) == 0 or \
+              st != vl.VL53L0X_ERROR_NONE:
+                break
+            loop_nr += 1
+            vl.VL53L0X_PollingDelay(self.dev)
+            if loop_nr >= vl.VL53L0X_DEFAULT_MAX_LOOP:
+                st = vl.VL53L0X_ERROR_TIME_OUT
+                break
+        vl.delete_uint32_t(stop_completed)
+        return st
 
-# Load VL53L0X shared lib
-# suffix = sysconfig.get_config_var('EXT_SUFFIX')
-# if suffix is None:
-#     suffix = ".so"
-# _POSSIBLE_LIBRARY_LOCATIONS = ['../bin'] + site.getsitepackages() + [site.getusersitepackages()]
-# for lib_location in _POSSIBLE_LIBRARY_LOCATIONS:
-#     try:
-#         _TOF_LIBRARY = CDLL(lib_location + '/vl53l0x_python' + suffix)
-#         break
-#     except OSError:
-#         pass
-# else:
-#     raise OSError('Could not find vl53l0x_python' + suffix)
+    def is_ready(self):
+        data_ready = vl.new_uint8_t(1)
+        ret_val = False
 
+        st = vl.VL53L0X_GetMeasurementDataReady(self.dev, data_ready)
+        if st != vl.VL53L0X_ERROR_NONE:
+            ret_val = None
+        elif vl.uint8_t___getitem__(data_ready,0) == 0x01:
+            ret_val = True
 
-class VL53L0X:
-    """VL53L0X ToF."""
-    def __init__(self, i2c_bus=1, i2c_address=0x29, tca9548a_num=255, tca9548a_addr=0):
-        """Initialize the VL53L0X ToF Sensor from ST"""
-        self._i2c_bus = i2c_bus
-        self.i2c_address = i2c_address
-        self._tca9548a_num = tca9548a_num
-        self._tca9548a_addr = tca9548a_addr
-        self._i2c = smbus.SMBus()
-        self._dev = None
-        # Resgiter Address
-        self.ADDR_UNIT_ID_HIGH = 0x16 # Serial number high byte
-        self.ADDR_UNIT_ID_LOW = 0x17 # Serial number low byte
-        self.ADDR_I2C_ID_HIGH = 0x18 # Write serial number high byte for I2C address unlock
-        self.ADDR_I2C_ID_LOW = 0x19 # Write serial number low byte for I2C address unlock
-        self.ADDR_I2C_SEC_ADDR = 0x8a # Write new I2C address after unlock
+        vl.delete_uint8_t(data_ready)
+        self._err = st
+        return ret_val
 
-    def open(self):
-        self._i2c.open(bus=self._i2c_bus)
-        self._configure_i2c_library_functions()
-        self._dev = _TOF_LIBRARY.initialise(self.i2c_address, self._tca9548a_num, self._tca9548a_addr)
-
-    def close(self):
-        self._i2c.close()
-        self._dev = None
-
-    def _configure_i2c_library_functions(self):
-        # I2C bus read callback for low level library.
-        def _i2c_read(address, reg, data_p, length):
-            ret_val = 0
-            result = []
-
-            try:
-                result = self._i2c.read_i2c_block_data(address, reg, length)
-            except IOError:
-                ret_val = -1
-
-            if ret_val == 0:
-                for index in range(length):
-                    data_p[index] = result[index]
-
-            return ret_val
-
-        # I2C bus write callback for low level library.
-        def _i2c_write(address, reg, data_p, length):
-            ret_val = 0
-            data = []
-
-            for index in range(length):
-                data.append(data_p[index])
-            try:
-                self._i2c.write_i2c_block_data(address, reg, data)
-            except IOError:
-                ret_val = -1
-
-            return ret_val
-
-        # Pass i2c read/write function pointers to VL53L0X library.
-        self._i2c_read_func = _I2C_READ_FUNC(_i2c_read)
-        self._i2c_write_func = _I2C_WRITE_FUNC(_i2c_write)
-        _TOF_LIBRARY.VL53L0X_set_i2c(self._i2c_read_func, self._i2c_write_func)
-
-    def start_ranging(self, mode=Vl53l0xAccuracyMode.GOOD):
-        """Start VL53L0X ToF Sensor Ranging"""
-        _TOF_LIBRARY.startRanging(self._dev, mode)
-
-    def stop_ranging(self):
-        """Stop VL53L0X ToF Sensor Ranging"""
-        _TOF_LIBRARY.stopRanging(self._dev)
+    def wait_ready(self):
+        '''
+        return None  -- Error status
+               False -- Timeout
+               True  -- Ready
+        '''
+        loop_nr = 0
+        while True:
+            r = self.is_ready()
+            if r is None or r:
+                return r
+            loop_nr += 1
+            vl.VL53L0X_PollingDelay(self.dev)
+            if loop_nr >= vl.VL53L0X_DEFAULT_MAX_LOOP:
+                break
+        return False
 
     def get_distance(self):
-        """Get distance from VL53L0X ToF Sensor"""
-        return _TOF_LIBRARY.getDistance(self._dev)
+        measured = vl.new_VL53L0X_RangingMeasurementData_t()
+        st = vl.VL53L0X_GetRangingMeasurementData(self.dev, measured)
+        dis = vl.VL53L0X_RangingMeasurementData_t_RangeMilliMeter_get(measured)
+        vl.VL53L0X_ClearInterruptMask(self.dev, _GPIO_NEW_SAMPLE_READY)
+        vl.delete_VL53L0X_RangingMeasurementData_t(measured)
+        self._err = st
+        return dis
 
-    # This function included to show how to access the ST library directly
-    # from python instead of through the simplified interface
-    def get_timing(self):
-        budget = c_uint(0)
-        budget_p = pointer(budget)
-        status = _TOF_LIBRARY.VL53L0X_GetMeasurementTimingBudgetMicroSeconds(self._dev, budget_p)
-        if status == 0:
-            return budget.value + 1000
-        else:
-            return 0
+def main():
+    print("VL53L0X Ranging example")
 
-    def configure_gpio_interrupt(
-            self, proximity_alarm_type=Vl53l0xGpioAlarmType.THRESHOLD_CROSSED_LOW,
-            interrupt_polarity=Vl53l0xInterruptPolarity.HIGH, threshold_low_mm=250, threshold_high_mm=500):
-        """
-        Configures a GPIO interrupt from device, be sure to call "clear_interrupt" after interrupt is processed.
-        """
-        pin = c_uint8(0)  # 0 is only GPIO pin.
-        device_mode = c_uint8(Vl53l0xDeviceMode.CONTINUOUS_RANGING)
-        functionality = c_uint8(proximity_alarm_type)
-        polarity = c_uint8(interrupt_polarity)
-        status = _TOF_LIBRARY.VL53L0X_SetGpioConfig(self._dev, pin, device_mode, functionality, polarity)
-        if status != 0:
-            raise Vl53l0xError('Error setting VL53L0X GPIO config')
+    vl53 = VL53L0X()
+    vl53.begin()
 
-        threshold_low = c_uint32(threshold_low_mm << 16)
-        threshold_high = c_uint32(threshold_high_mm << 16)
-        status = _TOF_LIBRARY.VL53L0X_SetInterruptThresholds(self._dev, device_mode, threshold_low, threshold_high)
-        if status != 0:
-            raise Vl53l0xError('Error setting VL53L0X thresholds')
+    '''
+    version = vl53.get_devver()
+    print("VL53L0X_GetDeviceInfo:")
+    print("Device Type   : %s" % version["type"])
+    print("Device Name   : %s" % version["name"])
+    print("Device ID     : %s" % version["id"])
+    print("RevisionMajor : %d" % version["major"])
+    print("RevisionMinor : %d" % version["minor"])
+    '''
 
-        # Ensure any pending interrupts are cleared.
-        self.clear_interrupt()
+    st = vl53.wait_ready()
+    if st:
+        print("Distance = {} mm".format(vl53.get_distance()))
 
-    def clear_interrupt(self):
-        mask = c_uint32(0)
-        status = _TOF_LIBRARY.VL53L0X_ClearInterruptMask(self._dev, mask)
-        if status != 0:
-            raise Vl53l0xError('Error clearing VL53L0X interrupt')
 
-    def change_address(self, new_address):
-        if self._dev is not None:
-            raise Vl53l0xError('Error changing VL53L0X address')
-
-        self._i2c.open(bus=self._i2c_bus)
-
-        if new_address == None:
-            return
-        elif new_address == self.i2c_address:
-            return
-        else:
-            # read value from 0x16,0x17
-            high = self._i2c.read_byte_data(self.i2c_address, self.ADDR_UNIT_ID_HIGH)
-            low = self._i2c.read_byte_data(self.i2c_address, self.ADDR_UNIT_ID_LOW)
-
-            # write value to 0x18,0x19
-            self._i2c.write_byte_data(self.i2c_address, self.ADDR_I2C_ID_HIGH, high)
-            self._i2c.write_byte_data(self.i2c_address, self.ADDR_I2C_ID_LOW, low)
-
-            # write new_address to 0x1a
-            self._i2c.write_byte_data(self.i2c_address, self.ADDR_I2C_SEC_ADDR, new_address)
-
-            self.i2c_address = new_address
-
-        self._i2c.close()
+if __name__ == '__main__':
+    main()
