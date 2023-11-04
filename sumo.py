@@ -11,6 +11,17 @@ mpu.Calibrate()
 
 Sumo = 0
 
+
+ML2_RIGHT_PIN = 6
+
+
+GPIO.setup(ML2_RIGHT_PIN, GPIO.IN)
+
+def read_ml2():
+    right_sensor = GPIO.input(ML2_RIGHT_PIN)
+    return right_sensor
+
+
 # motoare sumo
 # in1 = 24
 # in2 = 23
@@ -25,18 +36,14 @@ Sumo = 0
 # motoare maze 2 cu pi 0
 
 if Sumo == 0:
-    in1 = 18
-    # in1 = 12
-    in2 = 12
-    # in2 = 32
+    in1 = 24
+    in2 = 23
     # en = 22
     temp1=1
 
-    in3 = 13 # other motor
-    # in3 = 33 # other motor
-    # in4 = 35
-    in4 = 19
-  
+    in3 = 17 # other motor
+    in4 = 27
+
 elif Sumo == 1:
     in1 = 24
     in2 = 23
@@ -50,25 +57,16 @@ elif Sumo == 1:
 
 # en2 = 25
 
-START = 29
 
-# GPIO.setmode(GPIO.BCM)
-GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
-
-
-
-GPIO.setup(START, GPIO.IN)
-
 if Sumo == 1:
     GPIO.setup(en,GPIO.OUT)
 
 GPIO.output(in1,GPIO.LOW)
 GPIO.output(in2,GPIO.LOW)
-
-
 
 GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
@@ -133,25 +131,13 @@ def PWM_Setup(x):
             pi2_pwm.ChangeDutyCycle(0)
             pi3_pwm.ChangeDutyCycle(0)
             pi4_pwm.ChangeDutyCycle(0)
-
-
-
-# p=GPIO.PWM(en,1000)
-# p.start(25)
+ 
 
 if Sumo == 1:
     p1=GPIO.PWM(en,1000)
     p1.start(25)
     p2=GPIO.PWM(en2,1000)
     p2.start(25)
-
-
-print("\n")
-print("The default speed & direction of motor is LOW & Forward.....")
-print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-print("custom speed 0-10 (0-100%) & direction of motor is Forward & Backward.....")
-print("\n")    
-
 
 def forward():
     # GPIO.output(in1,GPIO.HIGH)
@@ -186,96 +172,109 @@ def speedy(x):
         p1.ChangeDutyCycle(int(x)*10)
         p2.ChangeDutyCycle(int(x)*10)
 
+def rotire(degrees):
+    while mpu.read() < degrees:
+        speedy(10)
+        forward()
 
-#wait for reset
-while GPIO.input(START) == 1:
-    a = 0
+# diamtru terenului: 122 cm
+# raza terenului: 61 cm
+# 20 x 20 cm robot
+# max_counts = 122 / 20 = 6.1
 
-#wait for start
-while GPIO.input(START)  == 0:
-    a = 0
-
-print('START')
-
-
+MAX_COUNTS = 10
 
 while True:
+    mpu.read()
+    print(mpu._angZ)
 
-    print(GPIO.input(START))
-    # while (GPIO.input(START)  == 0):
-    #     stop()
+    x=input()
 
-    # if (GPIO.input(START) == 0):
-    #     stop
-    # else:
-    #     mpu.read()
-    #     print(mpu._angZ)
-        
-    #     speedy(0.1)
-    #     forward()
-    #     sleep(0.1)
+    right_sensor = read_ml2()
+    print(f"Right sensor: {right_sensor}")
 
-    # x=input()
-    
-    # if x=='r':
-    #     print("run")
-    #     if(temp1==1):
-    #      forward()
-    #      print("forward")
-    #      x='z'
-    #     else:
-    #      backward()
-    #      print("backward")
-    #      x='z'
+    # count = 0
 
-    # elif x=='s':
-    #     print("stop")
-    #     stop()
-
-    #     x='z'
-
-    # elif x=='f':
-    #     print("forward")
-
-    #     forward()
-
-    #     temp1=1
-    #     x='z'
-
-    # elif x=='b':
-    #     print("backward")
-
-    #     backward()
-
-    #     temp1=0
-    #     x='z'
-
-    # elif x=='l':
-    #     print("low")
-    #     speedy(2.5)
-    #     x='z'
-
-    # elif x=='m':
-    #     print("medium")
-    #     speedy(5)
-    #     x='z'
-
-    # elif x=='h':
-    #     print("high")
-    #     speedy(7.5)
-    #     x='z'
-    # elif x=='full': 
-    #     print("full")
+    # if right_sensor == 0:
     #     speedy(10)
-    #     x='z'
+    #     forward()
+    # elif count < MAX_COUNTS :
+    #     count += 1
+    #     rotire(178)
+    # elif count == MAX_COUNTS:
+    #     count = 0
+    # elif count < MAX_COUNTS * 2:
+    #     rotire(-178)
+    # elif count == MAX_COUNTS * 2:
+    #     count = 0
 
 
-    # elif x=='e':
-    #     GPIO.cleanup()
-    #     break
+    # speedy(10)
+    # forward()
+    
+    # # senzor distanta < 30
+    # if right_sensor:
+        
+
+    if x=='r':
+        print("run")
+        if(temp1==1):
+         forward()
+         print("forward")
+         x='z'
+        else:
+         backward()
+         print("backward")
+         x='z'
+
+    elif x=='s':
+        print("stop")
+        stop()
+
+        x='z'
+
+    elif x=='f':
+        print("forward")
+
+        forward()
+
+        temp1=1
+        x='z'
+
+    elif x=='b':
+        print("backward")
+
+        backward()
+
+        temp1=0
+        x='z'
+
+    elif x=='l':
+        print("low")
+        speedy(2.5)
+        x='z'
+
+    elif x=='m':
+        print("medium")
+        speedy(5)
+        x='z'
+
+    elif x=='h':
+        print("high")
+        speedy(7.5)
+        x='z'
+    elif x=='full': 
+        print("full")
+        speedy(10)
+        x='z'
+
+
+    elif x=='e':
+        GPIO.cleanup()
+        break
 
 
     
-    # else:
-    #     print("<<<  wrong data  >>>")
-    #     print("please enter the defined data to continue.....")
+    else:
+        print("<<<  wrong data  >>>")
+        print("please enter the defined data to continue.....")

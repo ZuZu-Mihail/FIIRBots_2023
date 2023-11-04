@@ -13,6 +13,9 @@ import RPi.GPIO as GPIO
 
 in1 = 12
 in2 = 32
+in3 = 13
+in4 = 19
+
 
 # motoare sumo
 # in1 = 24
@@ -59,6 +62,8 @@ START = 40
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
+GPIO.setup(in3,GPIO.OUT)
+GPIO.setup(in4,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
 
 
@@ -70,6 +75,8 @@ GPIO.setup(START, GPIO.IN)
 
 GPIO.output(in1,GPIO.LOW)
 GPIO.output(in2,GPIO.LOW)
+GPIO.output(in3,GPIO.LOW)
+GPIO.output(in4,GPIO.LOW)
 
 
 
@@ -81,15 +88,15 @@ GPIO.output(in2,GPIO.LOW)
 # GPIO.output(in3,GPIO.LOW)
 # GPIO.output(in4,GPIO.LOW)
 
-# pi1_pwm = GPIO.PWM(in1, 1000)
-# pi2_pwm = GPIO.PWM(in2, 1000)
-# pi3_pwm = GPIO.PWM(in3, 1000)
-# pi4_pwm = GPIO.PWM(in4, 1000)
+pi1_pwm = GPIO.PWM(in1, 1000)
+pi2_pwm = GPIO.PWM(in2, 1000)
+pi3_pwm = GPIO.PWM(in3, 1000)
+pi4_pwm = GPIO.PWM(in4, 1000)
 
-# pi1_pwm.start(0)
-# pi2_pwm.start(0)
-# pi3_pwm.start(0)
-# pi4_pwm.start(0)
+pi1_pwm.start(0)
+pi2_pwm.start(0)
+pi3_pwm.start(0)
+pi4_pwm.start(0)
 
 # speed = 0
 
@@ -211,9 +218,23 @@ while True:
     while GPIO.input(START) == 1:
         GPIO.output(in1,GPIO.HIGH)
         GPIO.output(in2,GPIO.LOW)
+
+        GPIO.output(in3,GPIO.HIGH) # other motor
+        GPIO.output(in4,GPIO.LOW)
+
+        pi1_pwm.ChangeDutyCycle(90)
+        pi2_pwm.ChangeDutyCycle(0)
+        pi3_pwm.ChangeDutyCycle(90)
+        pi4_pwm.ChangeDutyCycle(0)
     else:
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.LOW)
+        GPIO.output(in3,GPIO.LOW)
+        GPIO.output(in4,GPIO.LOW)
+        pi1_pwm.ChangeDutyCycle(0)
+        pi2_pwm.ChangeDutyCycle(0)
+        pi3_pwm.ChangeDutyCycle(0)
+        pi4_pwm.ChangeDutyCycle(0)
     # while (GPIO.input(START)  == 0):
     #     stop()
 
