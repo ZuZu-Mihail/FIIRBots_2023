@@ -205,7 +205,7 @@ while True:
         # p.ChangeDutyCycle(75)
         speedy(7.5)
         x='z'
-    elif x=='full':
+    elif x=='full': 
         print("full")
         # p.ChangeDutyCycle(100)
         speedy(10)
