@@ -41,9 +41,9 @@ while GPIO.input(START)  == 0:
     a = 0
 print('START')
 
-startTime = time * 1000
+startTime = time.time() * 1000
 
-while ((time * 1000) - startTime < 3) and GPIO.input(START) == 1:
+while ((time.time() * 1000) - startTime < 3) and GPIO.input(START) == 1:
     left1_pwm.start(0)
     left2_pwm.start(0.5)
     right1_pwm.start(0)
