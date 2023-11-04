@@ -230,9 +230,9 @@ while True:
         # pi3_pwm.ChangeDutyCycle(75)
         # pi4_pwm.ChangeDutyCycle(0)
         speedy(7.5)
-        PMW_Setup(-1) # backward
+        PWM_Setup(-1) # backward
     else:
-        PMW_Setup(0)
+        PWM_Setup(0)
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.LOW)
         GPIO.output(in3,GPIO.LOW)
