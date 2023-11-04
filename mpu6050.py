@@ -82,7 +82,7 @@ class MPU6050(object):
     features common to MPU9150 and MPU9250 9DOF sensors.
     '''
     __bus = smbus.SMBus(1)
-    
+
     #some MPU6050 Registers and their Address
     __PWR_MGMT_1   = 0x6B
     __SMPLRT_DIV   = 0x19
@@ -160,6 +160,36 @@ class MPU6050(object):
         '''
         Start the MPU6050 and read data for the first time
         '''
+        self._rawAccX = 0
+        self._rawAccY = 0
+        self._rawAccZ = 0
+
+        self._rawGyroX = 0
+        self._rawGyroY = 0
+        self._rawGyroZ = 0
+
+        self._accX = 0
+        self._accY = 0
+        self._accZ = 0
+
+        self._angGyroX = 0
+        self._angGyroY = 0
+        self._angGyroZ = 0
+
+        self._angX = 0
+        self._angY = 0
+        self._angZ = 0
+
+        self.__dt = 0
+        self.__intervalStart = 0
+
+        self.__gyroXOffset = 0
+        self.__gyroYOffset = 0
+        self.__gyroZOffset = 0
+
+        self.__filterAccelCoeff = 0
+        self.__filterGyroCoeff = 0
+
         self.__filterAccelCoeff = self.__DEFAULT_ACCEL_COEFF
         self.__filterGyroCoeff = self.__DEFAULT_GYRO_COEFF
 
