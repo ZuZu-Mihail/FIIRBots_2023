@@ -160,7 +160,7 @@ class MPU6050(object):
         self.accel_range = 0                    # default to highest sensitivity
         self.gyro_range = 0                     # Likewise for gyro
 
-        self.__intervalStart = time.time() * 1000
+        self.__intervalStart = time.time() * 10000
 
     def Calibrate(self):
         '''
@@ -178,7 +178,7 @@ class MPU6050(object):
             sumGyroY += self._rawGyroY
             sumGyroZ += self._rawGyroZ
             i+=1
-            time.sleep(0.01)
+            time.sleep(0.001)
         
         sumGyroX /= self.__CALIBRATION_MEASURES
         sumGyroY /= self.__CALIBRATION_MEASURES
