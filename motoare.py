@@ -25,15 +25,17 @@ Sumo = 0
 # motoare maze 2 cu pi 0
 
 if Sumo == 0:
-    # in1 = 18
-    in1 = 12
-    # in2 = 12
-    in2 = 32
+    in1 = 18
+    # in1 = 12
+    in2 = 12
+    # in2 = 32
     # en = 22
     temp1=1
 
-    in3 = 33 # other motor
-    in4 = 35
+    in3 = 13 # other motor
+    # in3 = 33 # other motor
+    # in4 = 35
+    in4 = 19
 
 elif Sumo == 1:
     in1 = 24
@@ -48,7 +50,7 @@ elif Sumo == 1:
 
 # en2 = 25
 
-START = 40
+START = 29
 
 # GPIO.setmode(GPIO.BCM)
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
@@ -198,6 +200,8 @@ print('START')
 
 
 while True:
+
+    print(GPIO.input(START))
 
     mpu.read()
     print(mpu._angZ)
