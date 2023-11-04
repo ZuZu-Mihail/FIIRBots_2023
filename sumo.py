@@ -11,11 +11,8 @@ mpu.Calibrate()
 
 Sumo_EN = 0
 
-GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 
 ML2_RIGHT_PIN = 7
-
-GPIO.setup(ML2_RIGHT_PIN, GPIO.IN)
 
 def read_ml2():
     right_sensor = GPIO.input(ML2_RIGHT_PIN)
@@ -57,8 +54,11 @@ elif Sumo_EN == 1:
 
 # en2 = 25
 
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(ML2_RIGHT_PIN, GPIO.IN)
 
-GPIO.setmode(GPIO.BCM)
+
+# GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
