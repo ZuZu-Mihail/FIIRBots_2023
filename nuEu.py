@@ -27,9 +27,9 @@ right1_pwm = GPIO.PWM(right1, 1000)
 right2_pwm = GPIO.PWM(right2, 1000)
 
 left1_pwm.start(0)
-left2_pwm.start(0)
+left2_pwm.start(0.5)
 right1_pwm.start(0)
-right2_pwm.start(0)
+right2_pwm.start(0.5)
 
 #wait for reset
 while GPIO.input(START) == 1:
