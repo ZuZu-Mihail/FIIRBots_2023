@@ -144,8 +144,8 @@ class MPU6050(object):
 
     def __init__(self, side_str=0X68):
 
-        smbus.SMBus(1)
-        
+        self.__bus = smbus.SMBus(1)
+
         sleep_ms(200)
 
         self.__DEVICE_ADDRESS = side_str
