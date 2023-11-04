@@ -1,5 +1,6 @@
 from machine import Pin, I2C, PWM
 from utime import sleep_ms, sleep_us, ticks_ms, ticks_diff
+
 from vl53l0x import setup_tofl_device, TBOOT
 
 # setup led
@@ -58,6 +59,7 @@ tofl1 = setup_tofl_device(i2c_0, 40000, 12, 8)
 tofl1.set_address(0x32)
 
 sleep_us(TBOOT)
+
 
 tofl2 = setup_tofl_device(i2c_0, 40000, 12, 8)
 tofl2.set_address(0x33)
