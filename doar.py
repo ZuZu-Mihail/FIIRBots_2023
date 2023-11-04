@@ -1,4 +1,4 @@
-from machine import Pin, I2C, PWM
+
 from utime import sleep_ms, sleep_us, ticks_ms, ticks_diff
 
 from vl53l0x import setup_tofl_device, TBOOT
@@ -18,11 +18,6 @@ START = Pin(9, Pin.IN)
 glb.value(1)
 vrd.value(0)
 
-# setup i2c bus 0
-i2c_0 = I2C(id=0, sda=Pin(16), scl=Pin(17))
-
-# setup bus 1
-i2c_1 = I2C(id=1, sda=Pin(26), scl=Pin(27), freq=40000)
 
 #PWM DC Mot
 m_left1 = PWM(Pin(10))
