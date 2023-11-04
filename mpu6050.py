@@ -142,6 +142,9 @@ class MPU6050(object):
     __filterAccelCoeff = 0
     __filterGyroCoeff = 0
 
+    __low = 0
+    __high = 0
+
     def __init__(self, side_str=0X68):
 
         self.__bus = smbus.SMBus(1)
@@ -259,9 +262,13 @@ class MPU6050(object):
 
     def _read(self, addr):
 	#Accelero and Gyro value are 16-bit
-        high = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr)
-        low = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr+1)
-    
+        try:
+            high = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr)
+            low = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr+1)
+        except OSError:
+            high = self.__high
+            low = self.__low
+
         #concatenate higher and lower value
         value = ((high << 8) | low)
         
