@@ -82,7 +82,7 @@ class MPU6050(object):
     features common to MPU9150 and MPU9250 9DOF sensors.
     '''
     __bus = smbus.SMBus(1)
-
+    
     #some MPU6050 Registers and their Address
     __PWR_MGMT_1   = 0x6B
     __SMPLRT_DIV   = 0x19
