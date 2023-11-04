@@ -11,6 +11,9 @@ import RPi.GPIO as GPIO
 
 # Sumo = 0
 
+in1 = 12
+in2 = 32
+
 # motoare sumo
 # in1 = 24
 # in2 = 23
@@ -54,8 +57,8 @@ START = 40
 
 # GPIO.setmode(GPIO.BCM)
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-# GPIO.setup(in1,GPIO.OUT)
-# GPIO.setup(in2,GPIO.OUT)
+GPIO.setup(in1,GPIO.OUT)
+GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
 
 
@@ -65,8 +68,8 @@ GPIO.setup(START, GPIO.IN)
 # if Sumo == 1:
 #     GPIO.setup(en,GPIO.OUT)
 
-# GPIO.output(in1,GPIO.LOW)
-# GPIO.output(in2,GPIO.LOW)
+GPIO.output(in1,GPIO.LOW)
+GPIO.output(in2,GPIO.LOW)
 
 
 
@@ -202,6 +205,15 @@ print('START')
 while True:
 
     print(GPIO.input(START))
+    GPIO.output(in1,GPIO.LOW)
+    GPIO.output(in2,GPIO.LOW)
+
+    while GPIO.input(START) == 1:
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
+    else:
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.LOW)
     # while (GPIO.input(START)  == 0):
     #     stop()
 
