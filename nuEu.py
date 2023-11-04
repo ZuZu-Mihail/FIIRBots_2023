@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 
 right1 = 18
 right2 = 12
@@ -27,9 +28,9 @@ right1_pwm = GPIO.PWM(right1, 1000)
 right2_pwm = GPIO.PWM(right2, 1000)
 
 left1_pwm.start(0)
-left2_pwm.start(0.5)
+left2_pwm.start(0)
 right1_pwm.start(0)
-right2_pwm.start(0.5)
+right2_pwm.start(0)
 
 #wait for reset
 while GPIO.input(START) == 1:
@@ -39,4 +40,20 @@ while GPIO.input(START) == 1:
 while GPIO.input(START)  == 0:
     a = 0
 print('START')
+
+startTime = time * 1000
+
+while ((time * 1000) - startTime < 3) and GPIO.input(START) == 1:
+    left1_pwm.start(0)
+    left2_pwm.start(0.5)
+    right1_pwm.start(0)
+    right2_pwm.start(0.5)
+
+
+left1_pwm.start(0)
+left2_pwm.start(0)
+right1_pwm.start(0)
+right2_pwm.start(0)
+
+
 
