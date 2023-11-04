@@ -193,8 +193,7 @@ class MPU6050(object):
         Update the acceleration and gyroscope data of the MPU6050.\n
         TO AVOID UNREGISTERED MOVEMENT IT HAS TO BE CALLED CONTINUOUS.
         '''
-        self.update_accel()
-        self.update_gyro()
+        self._read_raw_data()
 
         accX = self._rawAccX * self.__ACCEL_TRANSFORMATION_NUMBER
         accY = self._rawAccY * self.__ACCEL_TRANSFORMATION_NUMBER
