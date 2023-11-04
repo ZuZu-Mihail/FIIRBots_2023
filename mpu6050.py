@@ -160,7 +160,7 @@ class MPU6050(object):
         self.accel_range = 0                    # default to highest sensitivity
         self.gyro_range = 0                     # Likewise for gyro
 
-        self.__intervalStart = time.time() * 10000
+        self.__intervalStart = time.time() * 1000
 
     def Calibrate(self):
         '''
@@ -206,7 +206,7 @@ class MPU6050(object):
         self._angAccX = wrap((atan2(accY, sqrt(accZ * accZ + accX * accX))) * self.__RAD_TO_DEG)
         self._angAccY = wrap((-atan2(accX, sqrt(accZ * accZ + accY * accY))) * self.__RAD_TO_DEG)
         
-        self.__dt = (((time.time() * 1000) - self.__intervalStart)) * 0.001
+        self.__dt = (((time.time() * 10000) - self.__intervalStart)) * 0.001
         self._angGyroX = wrap(self._angGyroX + gyroX * self.__dt)
         self._angGyroY = wrap(self._angGyroY + gyroY * self.__dt)
         self._angGyroZ = wrap(self._angGyroZ + gyroZ * self.__dt)
