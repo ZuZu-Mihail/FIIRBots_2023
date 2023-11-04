@@ -219,17 +219,20 @@ while True:
     print("b1")
 
     while GPIO.input(START) == 1:
-        GPIO.output(in1,GPIO.HIGH)
-        GPIO.output(in2,GPIO.LOW)
+        # GPIO.output(in1,GPIO.HIGH)
+        # GPIO.output(in2,GPIO.LOW)
 
-        GPIO.output(in3,GPIO.HIGH) # other motor
-        GPIO.output(in4,GPIO.LOW)
+        # GPIO.output(in3,GPIO.HIGH) # other motor
+        # GPIO.output(in4,GPIO.LOW)
 
-        pi1_pwm.ChangeDutyCycle(75)
-        pi2_pwm.ChangeDutyCycle(0)
-        pi3_pwm.ChangeDutyCycle(75)
-        pi4_pwm.ChangeDutyCycle(0)
+        # pi1_pwm.ChangeDutyCycle(75)
+        # pi2_pwm.ChangeDutyCycle(0)
+        # pi3_pwm.ChangeDutyCycle(75)
+        # pi4_pwm.ChangeDutyCycle(0)
+        speedy(7.5)
+        PMW_Setup(-1) # backward
     else:
+        PMW_Setup(0)
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.LOW)
         GPIO.output(in3,GPIO.LOW)
