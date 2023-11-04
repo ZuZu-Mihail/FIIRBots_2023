@@ -41,7 +41,7 @@ THE SOFTWARE.
 
 import time
 from math import sqrt, atan2
-import smbus                    #import SMBus module of I2C
+import smbus2 as smbus                    #import SMBus module of I2C
 
 
 class MPUException(OSError):
