@@ -11,6 +11,17 @@ mpu.Calibrate()
 
 Sumo = 0
 
+
+ML2_RIGHT_PIN = 6
+
+
+GPIO.setup(ML2_RIGHT_PIN, GPIO.IN)
+
+def read_ml2():
+    right_sensor = GPIO.input(ML2_RIGHT_PIN)
+    return right_sensor
+
+
 # motoare sumo
 # in1 = 24
 # in2 = 23
@@ -120,25 +131,13 @@ def PWM_Setup(x):
             pi2_pwm.ChangeDutyCycle(0)
             pi3_pwm.ChangeDutyCycle(0)
             pi4_pwm.ChangeDutyCycle(0)
-
-
-
-# p=GPIO.PWM(en,1000)
-# p.start(25)
+ 
 
 if Sumo == 1:
     p1=GPIO.PWM(en,1000)
     p1.start(25)
     p2=GPIO.PWM(en2,1000)
     p2.start(25)
-
-
-print("\n")
-print("The default speed & direction of motor is LOW & Forward.....")
-print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-print("custom speed 0-10 (0-100%) & direction of motor is Forward & Backward.....")
-print("\n")    
-
 
 def forward():
     # GPIO.output(in1,GPIO.HIGH)
@@ -173,15 +172,50 @@ def speedy(x):
         p1.ChangeDutyCycle(int(x)*10)
         p2.ChangeDutyCycle(int(x)*10)
 
+def rotire(degrees):
+    while mpu.read() < degrees:
+        speedy(10)
+        forward()
 
+# diamtru terenului: 122 cm
+# raza terenului: 61 cm
+# 20 x 20 cm robot
+# max_counts = 122 / 20 = 6.1
+
+MAX_COUNTS = 10
 
 while True:
-
     mpu.read()
     print(mpu._angZ)
 
     x=input()
+
+    right_sensor = read_ml2()
+    print(f"Right sensor: {right_sensor}")
+
+    count = 0
+
+    if right_sensor == 0:
+        speedy(10)
+        forward()
+    elif count < MAX_COUNTS :
+        count += 1
+        rotire(178)
+    elif count == MAX_COUNTS:
+        count = 0
+    elif count < MAX_COUNTS * 2:
+        rotire(-178)
+    elif count == MAX_COUNTS * 2:
+        count = 0
+
+
+    # speedy(10)
+    # forward()
     
+    # # senzor distanta < 30
+    # if right_sensor:
+        
+
     if x=='r':
         print("run")
         if(temp1==1):
