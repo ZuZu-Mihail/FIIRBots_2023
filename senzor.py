@@ -11,9 +11,9 @@ print("b1")
 Sumo = 0
 
 in1 = 12
-in2 = 32
-in3 = 35
-in4 = 33
+in2 = 33
+in3 = 32
+in4 = 35
 
 
 # motoare sumo
