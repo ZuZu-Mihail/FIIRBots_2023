@@ -50,12 +50,12 @@ elif Sumo == 1:
 
 START = 40
 
-GPIO.setmode(GPIO.BCM)
+# GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 # GPIO.setup(en,GPIO.OUT)
 
-GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 
 
 GPIO.setup(START, GPIO.IN)
