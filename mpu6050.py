@@ -77,9 +77,6 @@ class MPU6050(object):
     '''
     __bus = smbus.SMBus(1)
 
-    # debuggin some important stuff here, don't touch it
-    time.sleep(1)
-
     #some MPU6050 Registers and their Address
     __PWR_MGMT_1   = 0x6B
     __SMPLRT_DIV   = 0x19
@@ -222,6 +219,7 @@ class MPU6050(object):
 
     def _read(self, addr):
 	#Accelero and Gyro value are 16-bit
+        time.sleep(0.5)
         high = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr)
         low = self.__bus.read_byte_data(self.__DEVICE_ADDRESS, addr+1)
     
