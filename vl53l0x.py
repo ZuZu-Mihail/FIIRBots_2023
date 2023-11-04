@@ -79,18 +79,18 @@ _I2C_READ_FUNC = CFUNCTYPE(c_int, c_ubyte, c_ubyte, POINTER(c_ubyte), c_ubyte)
 _I2C_WRITE_FUNC = CFUNCTYPE(c_int, c_ubyte, c_ubyte, POINTER(c_ubyte), c_ubyte)
 
 # Load VL53L0X shared lib
-suffix = sysconfig.get_config_var('EXT_SUFFIX')
-if suffix is None:
-    suffix = ".so"
-_POSSIBLE_LIBRARY_LOCATIONS = ['../bin'] + site.getsitepackages() + [site.getusersitepackages()]
-for lib_location in _POSSIBLE_LIBRARY_LOCATIONS:
-    try:
-        _TOF_LIBRARY = CDLL(lib_location + '/vl53l0x_python' + suffix)
-        break
-    except OSError:
-        pass
-else:
-    raise OSError('Could not find vl53l0x_python' + suffix)
+# suffix = sysconfig.get_config_var('EXT_SUFFIX')
+# if suffix is None:
+#     suffix = ".so"
+# _POSSIBLE_LIBRARY_LOCATIONS = ['../bin'] + site.getsitepackages() + [site.getusersitepackages()]
+# for lib_location in _POSSIBLE_LIBRARY_LOCATIONS:
+#     try:
+#         _TOF_LIBRARY = CDLL(lib_location + '/vl53l0x_python' + suffix)
+#         break
+#     except OSError:
+#         pass
+# else:
+#     raise OSError('Could not find vl53l0x_python' + suffix)
 
 
 class VL53L0X:
