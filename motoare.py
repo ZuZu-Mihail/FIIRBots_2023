@@ -46,7 +46,7 @@ elif Sumo == 1:
 
 # en2 = 25
 
-START = 21
+START = 29
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
