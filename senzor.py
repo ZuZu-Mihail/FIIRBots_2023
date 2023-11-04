@@ -11,8 +11,8 @@ print("b1")
 Sumo = 0
 
 in1 = 12
-in2 = 33
-in3 = 32
+in2 = 32
+in3 = 33
 in4 = 35
 
 
